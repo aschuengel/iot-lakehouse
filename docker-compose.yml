@@ -1,0 +1,36 @@
+version: '3.0'
+services:
+  postgres:
+    image: postgres:14
+    environment:
+      - POSTGRES_PASSWORD=hive
+      - POSTGRES_USER=hive
+      - POSTGRES_DB=hive
+    ports:
+      - "5432:5432"
+  hive:
+    build: hive-metastore
+    ports:
+      - "9083:9083"
+    depends_on:
+      - postgres
+      - minio
+  minio:
+    image: minio/minio:latest
+    ports:
+      - "9001:9001"
+      - "9000:9000"
+    volumes:
+      - "./minio/data:/data"
+    environment:
+      - MINIO_ROOT_USER=minio
+      - MINIO_ROOT_PASSWORD=minio1234
+    command: server /data --console-address ":9001"
+  trino:
+    image: 'trinodb/trino:latest'
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./trino:/etc/trino  
+    depends_on:
+      - hive
