@@ -8,6 +8,7 @@ trino = "*"
 sqlalchemy = "*"
 pyarrow = "*"
 pandas = "*"
+psycopg2-binary = "*"
 
 [dev-packages]
 
